@@ -244,7 +244,6 @@ def print_subprocess(proc_name, proc_args):
       e_str = "[FROM VM]: {0}".format(proc.stderr.read().strip())
       # Recycling exception type
       raise OSError(e_str)
-    print("")
   except OSError as e:
     error_str = str(e)
     print("Error running {0}: {1}\nCALL: {2}\n".format(proc_name, error_str,
@@ -270,15 +269,17 @@ def traceroute_instance(instance,
   name = instance["name"]
   external_ip = instance["networkInterfaces"][0]["accessConfigs"][0]["natIP"]
   self_ip = obtain_self_ip()
-  print("Traceroute TO {0}: {1} -> {2}".format(name, self_ip, external_ip))
+  print(">>> Traceroute TO {0}: {1} -> {2}".format(name, self_ip, external_ip))
   print_subprocess("Traceroute", ["traceroute", external_ip])
+  print(">>>")
 
   if reverse_traceroute:
-    print("Traceroute FROM {0}: {1} -> {2}".format(name, external_ip, self_ip))
+    print("<<< Traceroute FROM {0}: {1} -> {2}".format(name, external_ip, self_ip))
     print_subprocess("Reverse Traceroute", [
         "gcloud", "compute", "ssh", name, "--project", tr_project_name,
         "--zone", tr_zone_name, "--command", "traceroute {0}".format(self_ip)
     ])
+    print("<<<")
 
 
 def print_instance(instance):
